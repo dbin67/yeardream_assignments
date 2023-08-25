@@ -2,9 +2,6 @@
 
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{StringType, StructField, StructType, DoubleType}
-import org.apache.spark.mllib.linalg._
-import org.apache.spark.mllib.stat.Statistics
-import org.apache.spark.sql.functions._
 
 val rdd = spark.sparkContext.textFile("spark-data/input/2008.csv")
 
@@ -37,7 +34,7 @@ val aggregatedDf = df.groupBy(col("origin")).agg(
         corr(col("depdelay"), col("weatherdelay")).alias("c2"),
         corr(col("depdelay"), col("nasdelay")).alias("c3"),
         corr(col("depdelay"), col("securitydelay")).alias("c4"),
-        corr(col("depdelay"), col("lateaircraftdelay").alias("c5"))
+        corr(col("depdelay"), col("lateaircraftdelay")).alias("c5")
     ).withColumn(
         "maxCorr", greatest(col("c1"), col("c2"), col("c3"), col("c4"), col("c5"))
     ).withColumn(
@@ -52,7 +49,6 @@ val aggregatedDf = df.groupBy(col("origin")).agg(
 aggregatedDf.select("origin", "maxDelayType", "maxCorr").show()
 
 // 7.1 Spark SQL 퀴즈 2
-import org.apache.spark.sql.functions._
 
 val airlineRdd = spark.sparkContext.textFile("spark-data/input/2008.csv")
 val airlineCsv = airlineRdd.map(f=>{f.split(",")}
